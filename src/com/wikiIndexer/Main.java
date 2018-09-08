@@ -15,7 +15,8 @@ public class Main {
         double time = System.currentTimeMillis();
         try {
             String path = args[0];
-            WikiIndexer wikiIndexer = new WikiIndexer();
+            Integer max_mem_limit = Integer.parseInt(args[1]);
+            WikiIndexer wikiIndexer = new WikiIndexer(max_mem_limit);
             File inputFile = new File(path);
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();

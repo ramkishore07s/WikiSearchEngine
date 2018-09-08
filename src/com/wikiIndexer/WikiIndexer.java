@@ -1,20 +1,13 @@
 package com.wikiIndexer;
 
 /**
- * TO ADDRESS MEMORY ISSUES,
- * * YOU CAN SET MAX NO OF POSTINGS TO HOLD IN MEMORY `max_len`
- * * CALL GARBAGE COLLECTOR EVERY N FILES `max_files`
- * * NOT CALLING GC MAKES THE INDEXER FASTER.
  *
- * * CALLING GC EVERY 10K FILES:
- * * * MAX POSTINGS                   PEAK MEMORY USAGE
- * *     10 million (~13-18k files)       5.46 GB
- * *     5 million  (~7-9k  files         3.2 GB
- * *     2 million                        ??
  */
 
+import javafx.geometry.Pos;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
+import java.math.BigInteger;
 import java.util.regex.Pattern;
 
 import java.util.*;
@@ -25,6 +18,7 @@ public class WikiIndexer {
 
     private int max_len = 10000000;
     private int sub_str_len = 25;
+    private int max_mem_limit = 5000;
 
     private SnowballStemmer stemmer = new SnowballStemmer(SnowballStemmer.ALGORITHM.ENGLISH);
     private StopWords s = new StopWords();
@@ -37,6 +31,7 @@ public class WikiIndexer {
     private ArrayList<Posting> linkPostings = new ArrayList<>();
     private ArrayList<Posting> refPostings = new ArrayList<>();
     private ArrayList<Posting> catPostings = new ArrayList<>();
+    private ArrayList<Posting> titlePostings = new ArrayList<>();
 
     private String tmpDir = "tmp__";
     private Integer tmp_file_no = 0;
@@ -50,7 +45,8 @@ public class WikiIndexer {
     private Pattern ref_pattern = Pattern.compile("ref[^a-z].*");
     private Pattern cat_pattern = Pattern.compile("Category:.*");
 
-    WikiIndexer() {
+    WikiIndexer(Integer max_mem_limit_) {
+        max_mem_limit = max_mem_limit_;
         //clean or create tmp__ dir for storing intermediate files
         File directory = new File(tmpDir);
         if (directory.exists()) {
@@ -67,10 +63,11 @@ public class WikiIndexer {
 
     public void index(String body, String title) {
 
-        if (file_no % 10000 == 0) System.gc();
-        if (textPostings.size() > max_len) clearAll();
-
         double mem = (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024* 1024);
+
+        if (file_no % 10000 == 0 || mem > max_mem_limit) System.gc();
+        if (textPostings.size() > max_len || mem > max_mem_limit) clearAll();
+
         printStatus(title, mem, file_no);
         if (mem > max_mem) max_mem = mem;
 
@@ -78,6 +75,7 @@ public class WikiIndexer {
         HashMap<String, Integer> link_index = new HashMap<>();
         HashMap<String, Integer> ref_index = new HashMap<>();
         HashMap<String, Integer> cat_index = new HashMap<>();
+        HashMap<String, Integer> title_index = new HashMap<>();
 
         file_no += 1;
         doc_names.add(file_no + ":" + title + "\n");
@@ -102,17 +100,25 @@ public class WikiIndexer {
             //text Index
             for (String a : tokens) {
                 a = stemWord(a);
-                if (a.length() > 0) { text_index.putIfAbsent(a, 0); text_index.computeIfPresent(a, (key_, value_) -> { return value_ + 1; }); }
-                if (ref && a.length() > 0) { ref_index.putIfAbsent(a, 0); ref_index.computeIfPresent(a, (key_, value_) -> { return value_ + 1; }); }
-                if (cat && a.length() > 0) { cat_index.putIfAbsent(a, 0); cat_index.computeIfPresent(a, (key_, value_) -> { return value_ + 1; }); }
-                if (link && a.length() > 0) { link_index.putIfAbsent(a, 0); link_index.computeIfPresent(a, (key_, value_) -> { return value_ + 1; });  }
+                if (a.length() > 2) { text_index.putIfAbsent(a, 0); text_index.computeIfPresent(a, (key_, value_) -> { return value_ + 1; }); }
+                if (ref && a.length() > 2) { ref_index.putIfAbsent(a, 0); ref_index.computeIfPresent(a, (key_, value_) -> { return value_ + 1; }); }
+                if (cat && a.length() > 2) { cat_index.putIfAbsent(a, 0); cat_index.computeIfPresent(a, (key_, value_) -> { return value_ + 1; }); }
+                if (link && a.length() > 2) { link_index.putIfAbsent(a, 0); link_index.computeIfPresent(a, (key_, value_) -> { return value_ + 1; });  }
             }
+        }
+
+        //title
+        String[] tokens = title.split("[^A-Za-z]");
+        for (String a: tokens) {
+            a = stemWord(a);
+            if (a.length() > 2) { title_index.putIfAbsent(a, 0); title_index.computeIfPresent(a,  (key_, value_) -> { return value_ + 1; }); }
         }
 
         updatePostings(textPostings, text_index);
         updatePostings(linkPostings, link_index);
         updatePostings(catPostings, cat_index);
         updatePostings(refPostings, ref_index);
+        updatePostings(titlePostings, title_index);
     }
 
 
@@ -124,6 +130,7 @@ public class WikiIndexer {
         writePostings(refPostings, "ref");
         writePostings(linkPostings, "link");
         writePostings(catPostings, "cat");
+        writePostings(titlePostings, "title");
 
         writeDocNames();
 
@@ -131,22 +138,27 @@ public class WikiIndexer {
         linkPostings.clear();
         refPostings.clear();
         catPostings.clear();
+        titlePostings.clear();
 
         doc_names.clear();
 
         stemmed = new HashMap<>();
         tmp_file_no += 1;
 
+        max_mem = 0;
         System.gc();
         time = System.currentTimeMillis() - time;
-        System.out.print("Time: "); System.out.print(time/1000 + "s\n") ;
+        System.out.print("Time: "); System.out.print(time/1000. + "s\n") ;
     }
 
     private String stemWord(String a) {
-        if (a.length() > 12) { a = a.substring(0, 12); }
+//        if (a.length() > 12) { a = a.substring(0, 12); }
         a = a.toLowerCase();                                                    //case folding
         if(!s.isStopword(a)) {                                                  //Stop word removal
-            stemmed.computeIfAbsent(a, k -> (String) stemmer.stem(k));
+            stemmed.computeIfAbsent(a, k -> {
+                String d = (String) stemmer.stem(k);
+                if (d.length() > 12) d = d.substring(0, 12);
+                return (String) d;});
             return stemmed.get(a);
         }
         return "";

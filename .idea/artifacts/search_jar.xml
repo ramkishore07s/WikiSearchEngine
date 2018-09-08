@@ -1,8 +1,9 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="search:jar">
+  <artifact type="jar" build-on-make="true" name="search:jar">
     <output-path>$USER_HOME$/Desktop</output-path>
     <root id="archive" name="search.jar">
       <element id="module-output" name="search" />
+      <element id="extracted-dir" path="$USER_HOME$/apache-opennlp-1.9.0/lib/opennlp-tools-1.9.0.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
