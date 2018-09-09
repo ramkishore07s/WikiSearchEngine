@@ -11,7 +11,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 public class Main {
 
-    public static void main(String args[]) {
+    public static void main__(String args[]) {
         double time = System.currentTimeMillis();
         try {
             String path = args[0];
@@ -26,6 +26,14 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        time = System.currentTimeMillis() - time;
+        System.out.print("Time: "); System.out.print(time/1000);
+    }
+
+    public static void main(String args[]) {
+        double time = System.currentTimeMillis();
+        WikiIndexMerger wikiIndexMerger = new WikiIndexMerger();
+        wikiIndexMerger.merge();
         time = System.currentTimeMillis() - time;
         System.out.print("Time: "); System.out.print(time/1000);
     }

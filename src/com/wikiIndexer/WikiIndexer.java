@@ -65,8 +65,8 @@ public class WikiIndexer {
 
         double mem = (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024* 1024);
 
-        if (file_no % 10000 == 0 || mem > max_mem_limit) System.gc();
-        if (textPostings.size() > max_len || mem > max_mem_limit) clearAll();
+        if (file_no % 10000 == 0) System.gc();
+        if (textPostings.size() > max_len) clearAll();
 
         printStatus(title, mem, file_no);
         if (mem > max_mem) max_mem = mem;

@@ -10,6 +10,9 @@ Call wikiIndexer to convert index to inverted index
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.BufferedReader;
+import java.util.ArrayList;
+
 public class WikiXMLHandler extends DefaultHandler {
     private boolean page = false;
     private boolean title = false;
