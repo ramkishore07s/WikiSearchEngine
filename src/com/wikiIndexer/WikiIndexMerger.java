@@ -4,6 +4,11 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+/**
+ * Need to optimize!!!
+ * Implement a interface to not read line by line and maybe a multi way merge
+ */
+
 public class WikiIndexMerger {
     private int buf_size = 1024 * 1024;
     private String inp_folder = "tmp__/";
@@ -11,13 +16,13 @@ public class WikiIndexMerger {
     private String final_index = "postings";
     private String text_ = "text_";
     private int no_files = new File(inp_folder).listFiles().length/6;
+    private String final_output;
 
 
-
-    WikiIndexMerger() {
+    WikiIndexMerger(String final_output_) {
         File file = new File(out_folder + "__final_0");
         File file2 = new File(out_folder);
-
+        final_output = final_output_;
         try {
             file2.mkdir();
             file.createNewFile();
@@ -42,9 +47,13 @@ public class WikiIndexMerger {
         __finish();
         System.out.println("done");
 
-
         File name = new File(out_folder + "postings");
         new File(out_folder + "__final_0").renameTo(name);
+
+        __finalisze();
+
+
+
     }
 
     private void __merge(int i, String type, int j) {
@@ -116,35 +125,47 @@ public class WikiIndexMerger {
         } catch (IOException e) { e.printStackTrace();}
     }
 
-    private String combine(String w1, String w2) {
-        String v1[] = w1.split("\\||,");
-        String v2[] = w2.split("\\||,");
+    public void __finalisze() {
+        //remove words that occur in less than 7 docs and occur in greater than 1/10th of documents of the corpus
+        String line;
+        try {
+            BufferedReader postings = new BufferedReader(new FileReader(out_folder + "postings"), buf_size);
+
+            FileOutputStream final_index_ = new FileOutputStream(final_output);
+            Writer final_index = new OutputStreamWriter(final_index_);
+
+            while ((line = postings.readLine()) != null) {
+                StringBuilder final_ = new StringBuilder();
+                try {
+                    if (line.length() > 70 && line.length() < 7000000)
+                        final_index.write(line + "\n");
+
+                } catch (ArrayIndexOutOfBoundsException e) {}//e.printStackTrace(); System.out.println(line + " " + parts.length);}
+            }
+        } catch (IOException e) { e.printStackTrace(); }
+
+    }
+
+    private String sort_(String w1) {
+        String v1[] = w1.split(",|\\|");
         ArrayList<Doc> i1 = new ArrayList<>();
         for (int i=0; i<v1.length; i+=2) {
-            i1.add(new Doc(Integer.parseInt(v1[i]), Integer.parseInt(v1[i+1])));
-        }
-        for (int i=0; i<v2.length; i+=2) {
-            i1.add(new Doc(Integer.parseInt(v2[i]), Integer.parseInt(v2[i+1])));
+          //  System.out.println(v1[0] + " " + v1[1] + " ;");
+            i1.add(new Doc(v1[i], v1[i+1]));
         }
         i1.sort(new DocComparator());
 
         String val = "";
         for (int i=0; i<i1.size(); ++i)  val += i1.get(i).toString();
-        System.out.println(val);
+        //System.out.println(val);
         return val;
-
-
-    }
-
-    private void sortIndex() {
-
     }
 }
 
 class Doc{
-    public Integer a, b;
+    public String a, b;
 
-    Doc(Integer a_, Integer b_) {
+    Doc(String a_, String b_) {
         a = a_;
         b = b_;
     }
@@ -159,6 +180,6 @@ class Doc{
 class DocComparator implements Comparator<Doc> {
 
     public int compare(Doc p1, Doc p2) {
-        return p2.b - p1.b;
+        return p2.b.compareToIgnoreCase(p1.b);
     }
 }
