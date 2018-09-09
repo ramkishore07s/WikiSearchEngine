@@ -4,28 +4,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-class Doc{
-    public Integer a, b;
-
-    Doc(Integer a_, Integer b_) {
-        a = a_;
-        b = b_;
-    }
-
-    @Override
-    public String toString() {
-        return a.toString() + ":" + b.toString() + "|";
-    }
-}
-
-
-class DocComparator implements Comparator<Doc> {
-
-    public int compare(Doc p1, Doc p2) {
-        return p2.b - p1.b;
-    }
-}
-
 public class WikiIndexMerger {
     private int buf_size = 1024 * 1024;
     private String inp_folder = "tmp__/";
@@ -160,5 +138,27 @@ public class WikiIndexMerger {
 
     private void sortIndex() {
 
+    }
+}
+
+class Doc{
+    public Integer a, b;
+
+    Doc(Integer a_, Integer b_) {
+        a = a_;
+        b = b_;
+    }
+
+    @Override
+    public String toString() {
+        return a.toString() + ":" + b.toString() + "|";
+    }
+}
+
+
+class DocComparator implements Comparator<Doc> {
+
+    public int compare(Doc p1, Doc p2) {
+        return p2.b - p1.b;
     }
 }
