@@ -96,7 +96,10 @@ public class WikiIndexMerger {
                 }
             }
             if (ltemp == null && lblock != null) {
-                while((lblock = block.readLine()) != null ) { final_index.write(lblock + "\n");}
+                while((lblock = block.readLine()) != null ) {
+                    w1 = lblock.split(":");
+                    final_index.write(w1[0] + ":" + pre  + w1[1] +  "\n");
+                }
             }
             if (lblock == null && ltemp != null) {
                 while((ltemp = temp_final.readLine()) != null) final_index.write(ltemp + "\n");
@@ -137,8 +140,12 @@ public class WikiIndexMerger {
             while ((line = postings.readLine()) != null) {
                 StringBuilder final_ = new StringBuilder();
                 try {
-                    if (line.length() > 70 && line.length() < 7000000)
+                    if (line.length() < 7000000)
                         final_index.write(line + "\n");
+                    if (line.length() > 7000000) {
+                        String[] w = line.split(";");
+                        final_index.write(w[0] + ";;;;\n");
+                    }
 
                 } catch (ArrayIndexOutOfBoundsException e) {}//e.printStackTrace(); System.out.println(line + " " + parts.length);}
             }
