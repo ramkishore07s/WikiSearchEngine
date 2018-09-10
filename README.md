@@ -13,14 +13,14 @@ Then to search, run
 `./search.sh`
 
 You will see something like this:
-`
+<pre>
 ---------------------------------------------------------------------------------
 ➜  wikiSearch ./search.sh
 'text:<words seperated by spaces>;cat:<...>;ref:<...>;title:<...>;link:<...>'
 
 > 
 ---------------------------------------------------------------------------------
-`
+</pre>
 
 The prompt is where you type your query.
 
@@ -28,7 +28,7 @@ The prompt is where you type your query.
 
 =================================================================================
 
-## 2. QUERY SYNTAX:  '<fieldname1>: <word1> <word2>;<fieldname2>: <word3> <word4>;'
+## 2. QUERY SYNTAX:  '\<fieldname1\>: \<word1\> \<word2\>;\<fieldname2\>: \<word3\> \<word4\>;'
 
 NOTE:
 1. QUOTATIONS AROUND QUERY ARE MUST.
