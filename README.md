@@ -48,7 +48,7 @@ Sample query:
 ## 3. STATISTICS
 
 * The search module was coded in PYTHON 2.7.
-* 90% of the time results will be given be under 0.3 seconds for 4 words.
+* 90% of the time results will be given be under 0.03 seconds for 4 words.
 
 
 ## 4. IMPLEMENTATION
