@@ -1,1 +1,1 @@
-python search.py
+python Python/search.py

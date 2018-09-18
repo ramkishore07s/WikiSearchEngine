@@ -6,11 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="866aef49-3563-41ac-bfc8-fb327e182169" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/wikiIndexer/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/wikiIndexer/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/wikiIndexer/WikiIndexMerger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/wikiIndexer/WikiIndexMerger.java" afterDir="false" />
-    </list>
+    <list default="true" id="866aef49-3563-41ac-bfc8-fb327e182169" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -75,7 +71,7 @@
     <session id="38062488">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="6" />
+          <entry key="project.closed" value="7" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.12" value="2" />
@@ -177,7 +173,7 @@
         <entry file="file://$PROJECT_DIR$/src/com/wikiIndexer/Main.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="332">
-              <caret line="25" column="75" lean-forward="true" selection-start-line="25" selection-start-column="75" selection-end-line="25" selection-end-column="75" />
+              <caret line="25" column="75" selection-start-line="25" selection-start-column="75" selection-end-line="25" selection-end-column="75" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -604,7 +600,7 @@
     <entry file="file://$PROJECT_DIR$/src/com/wikiIndexer/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="332">
-          <caret line="25" column="75" lean-forward="true" selection-start-line="25" selection-start-column="75" selection-end-line="25" selection-end-column="75" />
+          <caret line="25" column="75" selection-start-line="25" selection-start-column="75" selection-end-line="25" selection-end-column="75" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
